@@ -21,6 +21,9 @@ import { Console } from "@/common/Console";
 import { MongoConnection } from "./connect/mongoConnection";
 import { ExasolConnection } from './connect/exasolConnection';
 
+// Resolved at build time; must match contributes id (publisher.name).
+const extensionId = `${require("../../package.json").publisher}.${require("../../package.json").name}`;
+
 interface ConnectionWrapper {
     connection: IConnection;
     ssh: SSHConfig;
@@ -174,7 +177,7 @@ export class ConnectionManager {
     public static getByActiveFile(): Node {
         if (vscode.window.activeTextEditor) {
             const fileName = vscode.window.activeTextEditor.document.fileName;
-            if (fileName.includes('cweijan')) {
+            if (fileName.includes(extensionId)) {
                 const queryName = path.basename(path.resolve(fileName, '..'))
                 const [host, port, database, schema] = queryName
                     .replace(/^.*@@/, '') // new connection id
