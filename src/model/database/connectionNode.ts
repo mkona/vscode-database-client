@@ -1,4 +1,5 @@
 import { Console } from "@/common/Console";
+import { getConnectionDatabaseAllowlist, rowMatchesDatabaseAllowlist, treeDbNodeMatchesAllowlist } from "@/common/connectionScope";
 import { Global } from "@/common/global";
 import * as path from "path";
 import * as vscode from "vscode";
@@ -69,6 +70,8 @@ export class ConnectionNode extends Node implements CopyAble {
             return [new TableGroup(this), new ViewGroup(this)];
         }
 
+        const allowlist = getConnectionDatabaseAllowlist(this);
+
         let dbNodes = DatabaseCache.getSchemaListOfConnection(this.uid);
         if (dbNodes && !isRresh) {
             // update active state.
@@ -79,21 +82,14 @@ export class ConnectionNode extends Node implements CopyAble {
                     return new CatalogNode(dbNode.label, this)
                 }
                 return new SchemaNode(dbNode.label, this)
-            });
+            }).filter((n) => treeDbNodeMatchesAllowlist(n, allowlist));
         }
 
         const hasCatalog = this.dbType != DatabaseType.MYSQL && this.contextValue == ModelType.CONNECTION;
         const sql = hasCatalog ? this.dialect.showDatabases() : this.dialect.showSchemas();
         return this.execute<any[]>(sql)
             .then((databases) => {
-                const includeDatabaseArray = this.includeDatabases?.toLowerCase()?.split(",")
-                const usingInclude = this.includeDatabases && includeDatabaseArray && includeDatabaseArray.length >= 1;
-                const databaseNodes = databases.filter((db) => {
-                    if (usingInclude && !db.schema) {
-                        return includeDatabaseArray.indexOf(db.Database.toLocaleLowerCase()) != -1;
-                    }
-                    return true;
-                }).map<SchemaNode | CatalogNode>((database) => {
+                const databaseNodes = databases.filter((db) => rowMatchesDatabaseAllowlist(db, allowlist)).map<SchemaNode | CatalogNode>((database) => {
                     return hasCatalog ?
                         new CatalogNode(database.Database, this)
                         : new SchemaNode(database.schema || database.Database, this);

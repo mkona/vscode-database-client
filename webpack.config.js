@@ -32,7 +32,7 @@ module.exports = [
             }
         },
         plugins: [
-            new webpack.IgnorePlugin(/^(pg-native|cardinal|encoding|aws4)$/)
+            new webpack.IgnorePlugin(/^(pg-native|pg-cloudflare|cardinal|encoding|aws4)$/)
         ],
         module: { rules: [{ test: /\.ts$/, exclude: /(node_modules|bin)/, use: ['ts-loader'] }] },
         optimization: { minimize: isProd },

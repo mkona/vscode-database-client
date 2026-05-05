@@ -28,6 +28,7 @@
 	"command.document.generate": "生成数据库文档",
 	"command.struct.export": "导出表结构",
 	"command.db.active": "修改活动数据库",
+	"command.workspace.goToTable": "转到工作区数据表",
 	"command.table.truncate": "清空表",
 	"command.db.truncate": "清空数据库",
 	"command.table.drop": "删除表",

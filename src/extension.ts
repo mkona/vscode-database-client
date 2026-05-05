@@ -40,6 +40,7 @@ import { SSHConnectionNode } from "./model/ssh/sshConnectionNode";
 import { FTPFileNode } from "./model/ftp/ftpFileNode";
 import { HistoryNode } from "./provider/history/historyNode";
 import { ConnectService } from "./service/connect/connectService";
+import { showWorkspaceTablePicker } from "./service/workspaceTablePicker";
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -145,6 +146,9 @@ export function activate(context: vscode.ExtensionContext) {
             ...{
                 "mysql.db.active": () => {
                     serviceManager.provider.activeDb();
+                },
+                "mysql.workspace.goToTable": () => {
+                    return showWorkspaceTablePicker();
                 },
                 "mysql.db.truncate": (databaseNode: SchemaNode) => {
                     databaseNode.truncateDb();

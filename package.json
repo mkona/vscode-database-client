@@ -31,6 +31,7 @@
 	"activationEvents": [
 		"onCommand:mysql.connection.add",
 		"onCommand:mysql.refresh",
+		"onCommand:mysql.workspace.goToTable",
 		"onView:github.cweijan.mysql",
 		"onView:github.cweijan.nosql"
 	],
@@ -250,6 +251,11 @@
 			{
 				"command": "mysql.db.active",
 				"title": "%command.db.active%",
+				"category": "MySQL"
+			},
+			{
+				"command": "mysql.workspace.goToTable",
+				"title": "%command.workspace.goToTable%",
 				"category": "MySQL"
 			},
 			{
@@ -498,6 +504,11 @@
 				"command": "mysql.mock.run",
 				"when": "resourceFilename =~ /mock\\.json$/ ",
 				"key": "f9"
+			},
+			{
+				"command": "mysql.workspace.goToTable",
+				"key": "ctrl+shift+;",
+				"mac": "cmd+shift+;"
 			}
 		],
 		"menus": {

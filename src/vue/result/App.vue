@@ -148,16 +148,27 @@ export default {
         type: "success",
       });
     });
-    window.onkeypress = (e) => {
-      if (
-        (e.code == "Enter" && e.target.classList.contains("edit-column")) ||
-        (e.ctrlKey && e.code == "KeyS")
-      ) {
-        this.save();
-        e.stopPropagation();
+    window.addEventListener("keydown", (e) => {
+      const modNoShift = (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey;
+      const saveShortcut = modNoShift && e.code === "KeyS";
+      const refreshShortcut = modNoShift && e.code === "KeyR";
+      const enterInCell =
+        e.code === "Enter" &&
+        e.target &&
+        e.target.classList &&
+        e.target.classList.contains("edit-column");
+      if (refreshShortcut) {
+        this.refresh();
         e.preventDefault();
+        e.stopPropagation();
+        return;
       }
-    };
+      if (enterInCell || saveShortcut) {
+        this.save();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
     window.addEventListener("message", ({ data }) => {
       if (!data) return;
       const response = data.content;
@@ -232,7 +243,10 @@ export default {
       return this.editable && !row.isFilter;
     },
     save() {
-      if (Object.keys(this.update.editList).length == 0 && this.update.lock) {
+      if (Object.keys(this.update.editList).length === 0) {
+        return;
+      }
+      if (this.update.lock) {
         return;
       }
       this.update.lock = true;
@@ -370,6 +384,8 @@ export default {
     },
     refresh() {
       if (this.result.sql) {
+        this.update.editList = {};
+        this.update.lock = false;
         this.execute(this.result.sql);
       }
     },
