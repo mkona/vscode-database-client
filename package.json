@@ -1026,6 +1026,7 @@
 	"scripts": {
 		"dev": "webpack --progress",
 		"build": "webpack --progress --mode=production",
+		"package-extension": "npx --yes @vscode/vsce package --allow-missing-repository",
 		"lib": "webpack --config webpack.config.lib.js --progress -p",
 		"publich": "vsce publish",
 		"vscode:prepublish": "npm run build"
